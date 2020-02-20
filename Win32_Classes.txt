@@ -17,19 +17,3 @@ Win32_Share
 Win32_PrinterDriver
 Win32_TCPIPPrinterPort
 Win32_NTEventLogFile
-
-@echo off
-
-net stop spooler
-net stop LPDSVC
-
-rmdir /s /q "C:\Windows\System32\spool\"
-
-net start spooler
-net start LPDSVC
-
-printmanagement.msc
-
-cls 
-
-pause
