@@ -1,0 +1,35 @@
+Win32_OperatingSystem
+Win32_Processor
+Win32_BIOS
+Win32_ComputerSystem
+Win32_PhysicalMemoryArray
+Win32_PhysicalMemory
+Win32_PageFileUsage
+Win32_NetworkAdapter
+Win32_NetworkAdapterConfiguration
+Win32_LogicalDisk
+Win32_DiskDrive
+Win32_CDROMDrive
+Win32_SCSIController
+Win32_TapeDrive
+Win32_Service
+Win32_Share
+Win32_PrinterDriver
+Win32_TCPIPPrinterPort
+Win32_NTEventLogFile
+
+@echo off
+
+net stop spooler
+net stop LPDSVC
+
+rmdir /s /q "C:\Windows\System32\spool\"
+
+net start spooler
+net start LPDSVC
+
+printmanagement.msc
+
+cls 
+
+pause

@@ -293,29 +293,13 @@ Function GetTcpIp()
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li><b>" & objItem.Description & "</b></li>")
         htmlFile.writeLine("<ul>")
-        htmlFile.writeLine("<li> SettingID: " & objItem.SettingID & "</li>")
-        htmlFile.writeLine("<li> DatabasePath: " & objItem.DatabasePath & "</li>")
-        htmlFile.writeLine("<li> DefaultIPGateway[]: </li>")
-        PrintIpArray(objItem.DefaultIPGateway)
-        htmlFile.writeLine("<li> DHCPEnabled: " & objItem.DHCPEnabled & "</li>")
-        htmlFile.writeLine("<li> DNSEnabledForWINSResolution: " & objItem.DNSEnabledForWINSResolution & "</li>")
-        htmlFile.writeLine("<li> DNSHostName: " & objItem.DNSHostName & "</li>")
-        htmlFile.writeLine("<li> DNSServerSearchOrder[]: </li>")
-        PrintIpArray(objItem.DNSServerSearchOrder)
-        htmlFile.writeLine("<li> DomainDNSRegistrationEnabled: " & objItem.DomainDNSRegistrationEnabled & "</li>")
-        htmlFile.writeLine("<li> FullDNSRegistrationEnabled: " & objItem.FullDNSRegistrationEnabled & "</li>")
-        htmlFile.writeLine("<li> Index: " & objItem.Index & "</li>")
-        htmlFile.writeLine("<li> InterfaceIndex: " & objItem.InterfaceIndex & "</li>")
-        htmlFile.writeLine("<li> IPAddress[]: </li>")
+        htmlFile.writeLine("<li> IP de Gateway_________: " & objItem.DefaultIPGateway(0) & "</li>")
+        htmlFile.writeLine("<li> DHCP Ativado__________: " & objItem.DHCPEnabled & "</li>")
+        htmlFile.writeLine("<li> DNS Primário__________: " & UCase(objItem.DNSServerSearchOrder(0)) & "</li>")
+        htmlFile.writeLine("<li> DNS Secundário________: " & UCase(objItem.DNSServerSearchOrder(1)) & "</li>")
         PrintIpv4v6(objItem.IPAddress)
-        htmlFile.writeLine("<li> IPConnectionMetric: " & objItem.IPConnectionMetric & "</li>")
-        htmlFile.writeLine("<li> IPEnabled: " & objItem.IPEnabled & "</li>")
-        htmlFile.writeLine("<li> IPFilterSecurityEnabled: " & objItem.IPFilterSecurityEnabled & "</li>")
-        htmlFile.writeLine("<li> IPSubnet[]: </li>")
-        PrintIpArray(objItem.IPSubnet)
-        htmlFile.writeLine("<li> ServiceName: " & objItem.ServiceName & "</li>")
-        htmlFile.writeLine("<li> TcpipNetbiosOptions: " & objItem.TcpipNetbiosOptions & "</li>")
-        htmlFile.writeLine("<li> WINSEnableLMHostsLookup: " & objItem.WINSEnableLMHostsLookup & "</li>")
+        htmlFile.writeLine("<li> Máscara de Subrede____: " & objItem.IPSubnet(0) & "</li>")
+        htmlFile.writeLine("<li> Nome do Serviço_______: " & objItem.ServiceName & "</li>")
         htmlFile.writeLine("</ul>")
         htmlFile.writeLine("<br>")
         htmlFile.writeLine("</ul>")
@@ -334,15 +318,19 @@ End Function
 
 Function PrintIpv4v6(Jobs)
     On Error Resume Next
-    htmlFile.writeLine("<ul>")
     For Each objItem In Jobs
         If InStr(objItem, ":") <> 0 Then
-            htmlFile.writeLine("<li> IPv6: " & UCase(objItem) & "</li>")
+            htmlFile.writeLine("<li> Endereço IPv6_________: " & UCase(objItem) & "</li>")
         Else
-            htmlFile.writeLine("<li> IPv4: " & UCase(objItem) & "</li>")
+            htmlFile.writeLine("<li> Endereço IPv4_________: " & UCase(objItem) & "</li>")
         End If
     Next
-    htmlFile.writeLine("</ul>")
+End Function
+
+Function PrintDnsArray(Jobs)
+    On Error Resume Next
+    htmlFile.writeLine("<li> DNS Primário__________: " & UCase(Jobs(0)) & "</li>")
+    htmlFile.writeLine("<li> DNS Secundário________: " & UCase(Jobs(1)) & "</li>")
 End Function
 
 
