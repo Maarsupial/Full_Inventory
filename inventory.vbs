@@ -33,6 +33,7 @@ GetNetworkDevices()
 htmlFile.writeLine("<li class=""collapsible""> Configurações TCP/IP </li>")
 GetTcpIp()
 htmlFile.writeLine("<li class=""collapsible""> Configurações de Discos </li>")
+GetDisks()
 htmlFile.writeLine("<li class=""collapsible""> Placas Controladoras </li>")
 htmlFile.writeLine("<li class=""collapsible""> Unidade de Backup </li>")
 htmlFile.writeLine("<li class=""collapsible""> Usuários </li>")
@@ -334,6 +335,28 @@ End Function
 
 ' Configurações de Discos '
 Function GetDisks()
+    Set objLocator = CreateObject("WbemScripting.SWbemLocator")
+    Set objService = objLocator.ConnectServer(".", "ROOT\MicrosoftNLB\ms_409")
+
+	'Create a WMI query text 
+	WQL = "Select * from CIM_ComputerSystem"
+	'Get instances of CIM_ComputerSystem 
+	Set Jobs = oWMI.ExecQuery(WQL)
+
+    htmlFile.writeLine("<div class=""content"">")
+    For Each objItem In Jobs
+        htmlFile.writeLine("<li> ActionID: " & objItem.ActionID & "</li>")
+        htmlFile.writeLine("<li> ActionID: "&objItem.ActionID&"</li>") 
+        htmlFile.writeLine("<li> Caption: "&objItem.Caption&"</li>") 
+        htmlFile.writeLine("<li> Description: "&objItem.Description&"</li>") 
+        htmlFile.writeLine("<li> Direction: "&objItem.Direction&"</li>") 
+        htmlFile.writeLine("<li> Name: "&objItem.Name&"</li>") 
+        htmlFile.writeLine("<li> SoftwareElementID: "&objItem.SoftwareElementID&"</li>") 
+        htmlFile.writeLine("<li> SoftwareElementState: "&objItem.SoftwareElementState&"</li>") 
+        htmlFile.writeLine("<li> TargetOperatingSystem: "&objItem.TargetOperatingSystem&"</li>") 
+        htmlFile.writeLine("<li> Version: "&objItem.Version&"</li>") 
+    Next
+    htmlFile.writeLine("</div>")
 End Function
 
 ' Placas Controladoras '
