@@ -33,6 +33,7 @@ GetNetworkDevices()
 htmlFile.writeLine("<li class=""collapsible""> Configurações TCP/IP </li>")
 GetTcpIp()
 htmlFile.writeLine("<li class=""collapsible""> Configurações de Discos </li>")
+GetDisks()
 htmlFile.writeLine("<li class=""collapsible""> Placas Controladoras </li>")
 htmlFile.writeLine("<li class=""collapsible""> Unidade de Backup </li>")
 htmlFile.writeLine("<li class=""collapsible""> Usuários </li>")
@@ -119,7 +120,7 @@ Function GetProcessador()
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_Processor")
 
     htmlFile.writeLine("<div class=""content"">")
-    For Each objItem in Jobs
+    For Each objItem In Jobs
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li> Nome______________________: " & objItem.Name & "</li>")
         htmlFile.writeLine("<li> Disponibilidade___________: " & GetAvailability(CInt(objItem.Availability)) & "</li>")
@@ -155,7 +156,7 @@ Function GetBIOS()
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_BIOS")
 
     htmlFile.writeLine("<div class=""content"">")
-    For Each objItem in Jobs
+    For Each objItem In Jobs
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li> Nome______________________: " & objItem.Name & "</li>")
         htmlFile.writeLine("<li> Fabricante________________: " & objItem.Manufacturer & "</li>")
@@ -182,7 +183,7 @@ Function GetMemoria()
     totalMemory = 0
 
     htmlFile.writeLine("<div class=""content"">")
-    For Each objItem in Jobs
+    For Each objItem In Jobs
         memoryDevices = memoryDevices + 1
         totalMemory = totalMemory + (objItem.Capacity / 1048576)
     Next
@@ -194,7 +195,7 @@ Function GetMemoria()
 
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_PhysicalMemory")
 
-    For Each objItem in Jobs
+    For Each objItem In Jobs
         htmlFile.writeLine("<li><b>" & objItem.Tag & "</b></li>")
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li> Capacidade____________: " & objItem.Capacity / 1048576 & " MB</li>")
@@ -222,7 +223,7 @@ Function GetPageFile()
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_PageFileUsage")
 
     htmlFile.writeLine("<div class=""content"">")
-    For Each objItem in Jobs
+    For Each objItem In Jobs
         installDate = GetDate(objItem.InstallDate)
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li> Localização_______________: " & objItem.Caption & "</li>")
@@ -245,7 +246,7 @@ Function GetNetworkDevices()
     networkDevices = 0
 
     htmlFile.writeLine("<div class=""content"">")
-    For Each objItem in Jobs
+    For Each objItem In Jobs
         networkDevices = networkDevices + 1
     Next
 
@@ -255,7 +256,7 @@ Function GetNetworkDevices()
 
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_NetworkAdapter")
 
-    For Each objItem in Jobs
+    For Each objItem In Jobs
         lastResetDate = GetDate(objItem.TimeOfLastReset)
         htmlFile.writeLine("<li><b>" & objItem.Description & "</b></li>")
         htmlFile.writeLine("<ul>")
@@ -344,8 +345,78 @@ Function PrintIpv4v6(Jobs)
     htmlFile.writeLine("</ul>")
 End Function
 
+
+Function GetPageFile()
+    Set objLocator = CreateObject("WbemScripting.SWbemLocator")
+    Set objService = objLocator.ConnectServer(".", "root\cimv2")
+    objService.Security_.ImpersonationLevel = 3
+    Set Jobs = objService.ExecQuery("SELECT * FROM Win32_PageFileUsage")
+
+    htmlFile.writeLine("<div class=""content"">")
+    For Each objItem In Jobs
+        installDate = GetDate(objItem.InstallDate)
+        htmlFile.writeLine("<ul>")
+        htmlFile.writeLine("<li> Localização_______________: " & objItem.Caption & "</li>")
+        htmlFile.writeLine("<li> Data de Instalação________: " & installDate & "</li>")
+        htmlFile.writeLine("<li> Espaço Padrão_____________: " & objItem.AllocatedBaseSize & " MB</li>")
+        htmlFile.writeLine("<li> Uso Atual_________________: " & objItem.CurrentUsage & " MB</li>")
+        htmlFile.writeLine("<li> Pico de Uso_______________: " & objItem.PeakUsage & " MB</li>")
+        htmlFile.writeLine("</ul>")
+    Next
+
+    htmlFile.writeLine("</div>")
+End Function
+
 ' Configurações de Discos '
 Function GetDisks()
+    Set objLocator = CreateObject("WbemScripting.SWbemLocator")
+    Set objService = objLocator.ConnectServer(".", "root\cimv2")
+    objService.Security_.ImpersonationLevel = 3
+    Set Jobs = objService.ExecQuery("SELECT * FROM Win32_LogicalDisk")
+
+    htmlFile.writeLine("<div class=""content"">")
+    For Each objItem In Jobs
+        htmlFile.writeLine("<li> BlockSize: " & objItem.BlockSize & "</li>")
+        htmlFile.writeLine("<li> Caption: " & objItem.Caption & "</li>")
+        htmlFile.writeLine("<li> Compressed: " & objItem.Compressed & "</li>")
+        htmlFile.writeLine("<li> ConfigManagerErrorCode: " & objItem.ConfigManagerErrorCode & "</li>")
+        htmlFile.writeLine("<li> ConfigManagerUserConfig: " & objItem.ConfigManagerUserConfig & "</li>")
+        htmlFile.writeLine("<li> CreationClassName: " & objItem.CreationClassName & "</li>")
+        htmlFile.writeLine("<li> Description: " & objItem.Description & "</li>")
+        htmlFile.writeLine("<li> DeviceID: " & objItem.DeviceID & "</li>")
+        htmlFile.writeLine("<li> DriveType: " & objItem.DriveType & "</li>")
+        htmlFile.writeLine("<li> ErrorCleared: " & objItem.ErrorCleared & "</li>")
+        htmlFile.writeLine("<li> ErrorDescription: " & objItem.ErrorDescription & "</li>")
+        htmlFile.writeLine("<li> ErrorMethodology: " & objItem.ErrorMethodology & "</li>")
+        htmlFile.writeLine("<li> FileSystem: " & objItem.FileSystem & "</li>")
+        htmlFile.writeLine("<li> FreeSpace: " & objItem.FreeSpace & "</li>")
+        htmlFile.writeLine("<li> InstallDate: " & objItem.InstallDate & "</li>")
+        htmlFile.writeLine("<li> LastErrorCode: " & objItem.LastErrorCode & "</li>")
+        htmlFile.writeLine("<li> MaximumComponentLength: " & objItem.MaximumComponentLength & "</li>")
+        htmlFile.writeLine("<li> MediaType: " & objItem.MediaType & "</li>")
+        htmlFile.writeLine("<li> Name: " & objItem.Name & "</li>")
+        htmlFile.writeLine("<li> NumberOfBlocks: " & objItem.NumberOfBlocks & "</li>")
+        htmlFile.writeLine("<li> PNPDeviceID: " & objItem.PNPDeviceID & "</li>")
+        'htmlFile.writeLine("<li> PowerManagementCapabilities[]: " & PrintArray(objItem.PowerManagementCapabilities) & "</li>")
+        htmlFile.writeLine("<li> PowerManagementSupported: " & objItem.PowerManagementSupported & "</li>")
+        htmlFile.writeLine("<li> ProviderName: " & objItem.ProviderName & "</li>")
+        htmlFile.writeLine("<li> Purpose: " & objItem.Purpose & "</li>")
+        htmlFile.writeLine("<li> QuotasDisabled: " & objItem.QuotasDisabled & "</li>")
+        htmlFile.writeLine("<li> QuotasIncomplete: " & objItem.QuotasIncomplete & "</li>")
+        htmlFile.writeLine("<li> QuotasRebuilding: " & objItem.QuotasRebuilding & "</li>")
+        htmlFile.writeLine("<li> Size: " & objItem.Size & "</li>")
+        htmlFile.writeLine("<li> Status: " & objItem.Status & "</li>")
+        htmlFile.writeLine("<li> StatusInfo: " & objItem.StatusInfo & "</li>")
+        htmlFile.writeLine("<li> SupportsDiskQuotas: " & objItem.SupportsDiskQuotas & "</li>")
+        htmlFile.writeLine("<li> SupportsFileBasedCompression: " & objItem.SupportsFileBasedCompression & "</li>")
+        htmlFile.writeLine("<li> SystemCreationClassName: " & objItem.SystemCreationClassName & "</li>")
+        htmlFile.writeLine("<li> SystemName: " & objItem.SystemName & "</li>")
+        htmlFile.writeLine("<li> VolumeDirty: " & objItem.VolumeDirty & "</li>")
+        htmlFile.writeLine("<li> VolumeName: " & objItem.VolumeName & "</li>")
+        htmlFile.writeLine("<li> VolumeSerialNumber: " & objItem.VolumeSerialNumber & "</li>")
+    Next
+    htmlFile.writeLine("</div>")
+
 End Function
 
 ' Placas Controladoras '
@@ -371,6 +442,14 @@ htmlFile.writeLine("</body>")
 htmlFile.writeLine("</html>")
 
 ' Funções '
+Function PrintArray(Jobs)
+    htmlFile.writeLine("<ol>")
+    For Each objItem In Jobs
+        htmlFile.writeLine("<li>" & objItem & "</li>")
+    Next
+    htmlFile.writeLine("</ol>")
+End Function
+
 Function Country( numCountry )
 	' Extracted from Microsoft Internet Explorer 6 Resource Kit, '
 	' Appendix F: Country/Region and Language Codes '
