@@ -136,8 +136,8 @@ Function GetProcessador()
         htmlFile.writeLine("<li> Clock Máximo______________: " & GetClock(CInt(objItem.MaxClockSpeed)) & "</li>")
         htmlFile.writeLine("<li> Clock Atual_______________: " & GetClock(CInt(objItem.CurrentClockSpeed)) & "</li>")
         htmlFile.writeLine("<li> Clock Externo_____________: " & GetClock(CInt(objItem.ExtClock)) & "</li>")
-        htmlFile.writeLine("<li> L2CacheSize_______________: " & CInt(objItem.L2CacheSize) / 1024 & " MB</li>")
-        htmlFile.writeLine("<li> L3CacheSize_______________: " & CInt(objItem.L3CacheSize) / 1024 & " MB</li>")
+        htmlFile.writeLine("<li> Cache L2__________________: " & CInt(objItem.L2CacheSize) / 1024 & " MB</li>")
+        htmlFile.writeLine("<li> Cache L3__________________: " & CInt(objItem.L3CacheSize) / 1024 & " MB</li>")
         htmlFile.writeLine("<li> Tensão Atual______________: " & objItem.CurrentVoltage & "V</li>")
         htmlFile.writeLine("<li> ID do Dispositivo_________: " & objItem.DeviceID & "</li>")
         htmlFile.writeLine("<li> ID do Processador_________: " & objItem.ProcessorId & "</li>")
@@ -293,11 +293,16 @@ Function GetTcpIp()
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li><b>" & objItem.Description & "</b></li>")
         htmlFile.writeLine("<ul>")
-        htmlFile.writeLine("<li> IP de Gateway_________: " & objItem.DefaultIPGateway(0) & "</li>")
+        If (IsCollection(objItem.DefaultIPGateway)) Then
+            htmlFile.writeLine("<li> IP de Gateway_________: " & objItem.DefaultIPGateway(0) & "</li>")
+        End If
         htmlFile.writeLine("<li> DHCP Ativado__________: " & objItem.DHCPEnabled & "</li>")
-        htmlFile.writeLine("<li> DNS Primário__________: " & UCase(objItem.DNSServerSearchOrder(0)) & "</li>")
-        htmlFile.writeLine("<li> DNS Secundário________: " & UCase(objItem.DNSServerSearchOrder(1)) & "</li>")
+        If (IsCollection(objItem.DNSServerSearchOrder)) Then
+            htmlFile.writeLine("<li> DNS Primário__________: " & UCase(objItem.DNSServerSearchOrder(0)) & "</li>")
+            htmlFile.writeLine("<li> DNS Secundário________: " & UCase(objItem.DNSServerSearchOrder(1)) & "</li>")
+        End If
         PrintIpv4v6(objItem.IPAddress)
+        htmlFile.writeLine("<li> Endereço MAC__________: " & objItem.MACAddress & "</li>")
         htmlFile.writeLine("<li> Máscara de Subrede____: " & objItem.IPSubnet(0) & "</li>")
         htmlFile.writeLine("<li> Nome do Serviço_______: " & objItem.ServiceName & "</li>")
         htmlFile.writeLine("</ul>")
@@ -305,15 +310,6 @@ Function GetTcpIp()
         htmlFile.writeLine("</ul>")
     Next
     htmlFile.writeLine("</div>")
-End Function
-
-Function PrintIpArray(Jobs)
-    On Error Resume Next
-    htmlFile.writeLine("<ul>")
-    For Each objItem In Jobs
-        htmlFile.writeLine("<li> " & UCase(objItem) & "</li>")
-    Next
-    htmlFile.writeLine("</ul>")
 End Function
 
 Function PrintIpv4v6(Jobs)
@@ -1110,3 +1106,13 @@ Function IsCollection(param)
         IsCollection = True
     End If
 End Function
+
+Function PrintIpArray(Jobs)
+    On Error Resume Next
+    htmlFile.writeLine("<ul>")
+    For Each objItem In Jobs
+        htmlFile.writeLine("<li> " & UCase(objItem) & "</li>")
+    Next
+    htmlFile.writeLine("</ul>")
+End Function
+
