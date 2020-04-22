@@ -53,7 +53,7 @@ Function GetSistemaOperacional()
     objService.Security_.ImpersonationLevel = 3
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_OperatingSystem")
 
-    htmlFile.writeLine("<div id=""so"" class=""content"">")
+    htmlFile.writeLine("<div class=""content"">")
     For Each objItem In Jobs
         installDate = GetDate(objItem.InstallDate)
         localDateTime = GetDate(objItem.LocalDateTime)
@@ -119,7 +119,7 @@ Function GetProcessador()
     objService.Security_.ImpersonationLevel = 3
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_Processor")
 
-    htmlFile.writeLine("<div id=""cpu"" class=""content"">")
+    htmlFile.writeLine("<div class=""content"">")
     For Each objItem In Jobs
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li> Nome______________________: " & objItem.Name & "</li>")
@@ -155,7 +155,7 @@ Function GetBIOS()
     objService.Security_.ImpersonationLevel = 3
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_BIOS")
 
-    htmlFile.writeLine("<div id=""bios"" class=""content"">")
+    htmlFile.writeLine("<div class=""content"">")
     For Each objItem In Jobs
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li> Nome______________________: " & objItem.Name & "</li>")
@@ -182,7 +182,7 @@ Function GetMemoria()
     memoryDevices = 0
     totalMemory = 0
 
-    htmlFile.writeLine("<div id=""ram"" class=""content"">")
+    htmlFile.writeLine("<div class=""content"">")
     For Each objItem In Jobs
         memoryDevices = memoryDevices + 1
         totalMemory = totalMemory + (objItem.Capacity / 1048576)
@@ -195,7 +195,6 @@ Function GetMemoria()
 
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_PhysicalMemory")
 
-    counter = 0
     For Each objItem In Jobs
         htmlFile.writeLine("<li><b>" & objItem.Tag & "</b></li>")
         htmlFile.writeLine("<ul>")
@@ -210,10 +209,7 @@ Function GetMemoria()
         htmlFile.writeLine("<li> Largura Total_________: " & objItem.TotalWidth & "</li>")
         htmlFile.writeLine("<li> Largura Total_________: " & objItem.TotalWidth & "</li>")
         htmlFile.writeLine("</ul>")
-        If counter <> (Jobs.Count - 1) Then
-            htmlFile.writeLine("<br>")        
-        End If        
-        counter = counter + 1
+        htmlFile.writeLine("<br>")
     Next
     htmlFile.writeLine("</ul>")
     htmlFile.writeLine("</div>")
@@ -226,7 +222,7 @@ Function GetPageFile()
     objService.Security_.ImpersonationLevel = 3
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_PageFileUsage")
 
-    htmlFile.writeLine("<div id=""pagefile"" class=""content"">")
+    htmlFile.writeLine("<div class=""content"">")
     For Each objItem In Jobs
         installDate = GetDate(objItem.InstallDate)
         htmlFile.writeLine("<ul>")
@@ -249,7 +245,7 @@ Function GetNetworkDevices()
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_NetworkAdapter")
     networkDevices = 0
 
-    htmlFile.writeLine("<div id=""network"" class=""content"">")
+    htmlFile.writeLine("<div class=""content"">")
     For Each objItem In Jobs
         networkDevices = networkDevices + 1
     Next
@@ -260,7 +256,6 @@ Function GetNetworkDevices()
 
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_NetworkAdapter")
 
-    counter = 0
     For Each objItem In Jobs
         lastResetDate = GetDate(objItem.TimeOfLastReset)
         htmlFile.writeLine("<li><b>" & objItem.Description & "</b></li>")
@@ -280,10 +275,7 @@ Function GetNetworkDevices()
         htmlFile.writeLine("<li> Velocidade da Conexão_: " & GetNetDeviceSpeed(objItem.Speed) & "</li>")
         htmlFile.writeLine("<li> Ultimo Reset__________: " & lastResetDate & "</li>")
         htmlFile.writeLine("</ul>")
-        If counter <> (Jobs.Count - 1) Then
-            htmlFile.writeLine("<br>")        
-        End If        
-        counter = counter + 1
+        htmlFile.writeLine("<br>")
     Next
     htmlFile.writeLine("</ul>")
     htmlFile.writeLine("</div>")
@@ -296,7 +288,7 @@ Function GetTcpIp()
     objService.Security_.ImpersonationLevel = 3
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = True")
 
-    htmlFile.writeLine("<div id=""tcpip"" class=""content"">")
+    htmlFile.writeLine("<div class=""content"">")
     For Each objItem In Jobs
         htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li><b>" & objItem.Description & "</b></li>")
@@ -337,6 +329,28 @@ Function PrintDnsArray(Jobs)
     htmlFile.writeLine("<li> DNS Secundário________: " & UCase(Jobs(1)) & "</li>")
 End Function
 
+
+Function GetPageFile()
+    Set objLocator = CreateObject("WbemScripting.SWbemLocator")
+    Set objService = objLocator.ConnectServer(".", "root\cimv2")
+    objService.Security_.ImpersonationLevel = 3
+    Set Jobs = objService.ExecQuery("SELECT * FROM Win32_PageFileUsage")
+
+    htmlFile.writeLine("<div class=""content"">")
+    For Each objItem In Jobs
+        installDate = GetDate(objItem.InstallDate)
+        htmlFile.writeLine("<ul>")
+        htmlFile.writeLine("<li> Localização_______________: " & objItem.Caption & "</li>")
+        htmlFile.writeLine("<li> Data de Instalação________: " & installDate & "</li>")
+        htmlFile.writeLine("<li> Espaço Padrão_____________: " & objItem.AllocatedBaseSize & " MB</li>")
+        htmlFile.writeLine("<li> Uso Atual_________________: " & objItem.CurrentUsage & " MB</li>")
+        htmlFile.writeLine("<li> Pico de Uso_______________: " & objItem.PeakUsage & " MB</li>")
+        htmlFile.writeLine("</ul>")
+    Next
+
+    htmlFile.writeLine("</div>")
+End Function
+
 ' Configurações de Discos '
 Function GetDisks()
     Set objLocator = CreateObject("WbemScripting.SWbemLocator")
@@ -344,11 +358,10 @@ Function GetDisks()
     objService.Security_.ImpersonationLevel = 3
     Set Jobs = objService.ExecQuery("SELECT * FROM Win32_LogicalDisk")
 
-    htmlFile.writeLine("<div id=""disks"" class=""content"">")
+    htmlFile.writeLine("<div class=""content"">")
     For Each objItem In Jobs
-        htmlFile.writeLine("<li><b> Caption: " & objItem.Caption & "</b></li>")
-        htmlFile.writeLine("<ul>")
         htmlFile.writeLine("<li> BlockSize: " & objItem.BlockSize & "</li>")
+        htmlFile.writeLine("<li> Caption: " & objItem.Caption & "</li>")
         htmlFile.writeLine("<li> Compressed: " & objItem.Compressed & "</li>")
         htmlFile.writeLine("<li> ConfigManagerErrorCode: " & objItem.ConfigManagerErrorCode & "</li>")
         htmlFile.writeLine("<li> ConfigManagerUserConfig: " & objItem.ConfigManagerUserConfig & "</li>")
@@ -369,7 +382,6 @@ Function GetDisks()
         htmlFile.writeLine("<li> NumberOfBlocks: " & objItem.NumberOfBlocks & "</li>")
         htmlFile.writeLine("<li> PNPDeviceID: " & objItem.PNPDeviceID & "</li>")
         'htmlFile.writeLine("<li> PowerManagementCapabilities[]: " & PrintArray(objItem.PowerManagementCapabilities) & "</li>")
-        htmlFile.writeLine("<li> PowerManagementCapabilities[]: " & objItem.PowerManagementCapabilities & "</li>")
         htmlFile.writeLine("<li> PowerManagementSupported: " & objItem.PowerManagementSupported & "</li>")
         htmlFile.writeLine("<li> ProviderName: " & objItem.ProviderName & "</li>")
         htmlFile.writeLine("<li> Purpose: " & objItem.Purpose & "</li>")
@@ -386,8 +398,6 @@ Function GetDisks()
         htmlFile.writeLine("<li> VolumeDirty: " & objItem.VolumeDirty & "</li>")
         htmlFile.writeLine("<li> VolumeName: " & objItem.VolumeName & "</li>")
         htmlFile.writeLine("<li> VolumeSerialNumber: " & objItem.VolumeSerialNumber & "</li>")
-        htmlFile.writeLine("</ul>")
-        htmlFile.writeLine("<br>")
     Next
     htmlFile.writeLine("</div>")
 
